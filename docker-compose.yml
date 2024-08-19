@@ -1,0 +1,15 @@
+
+
+services:
+  database:
+    image: postgres
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    ports:
+        - "5432:5432"
+
+                 
