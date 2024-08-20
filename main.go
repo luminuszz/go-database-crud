@@ -8,6 +8,7 @@ import (
 
 type Handlers struct {
 	usersService *service.UsersService
+	postService  *service.PostsService
 }
 
 var connection = "postgresql://docker:docker@localhost:5432/mydb"
@@ -22,6 +23,7 @@ func main() {
 	defer db.Close(context.Background())
 
 	usersService := service.NewUserService(db)
+	postService := service.NewPostService(db)
 
 	result, err := usersService.GetAllUsers()
 
@@ -45,6 +47,31 @@ func main() {
 		println(user.Email)
 		println(user.PasswordHash)
 		println("------------")
+	}
+
+	postError := postService.CreatePost(&service.Post{
+		Title:    "Title",
+		Content:  "Content",
+		AuthorId: 1,
+	})
+
+	if postError != nil {
+		panic(postError)
+	}
+
+	err, postsWithAutorList := postService.FindAllPostByAuthor(1)
+
+	if err != nil {
+		panic(err)
+	}
+
+	for _, post := range postsWithAutorList {
+		println(post.Id)
+		println(post.Title)
+		println(post.Content)
+		println(post.Author)
+		println("------------")
+
 	}
 
 }
